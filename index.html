@@ -1,38 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
-</head>
-<body>
-    <h1>Menu</h1>
-    <ul id="menu-list">
-        <!-- Menu items will be displayed here -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The merger</title>
+    <link href="index.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="navbar.css">
+  </head>
+  <body>
+    <ul class="topnav">
+      <li><a class="active" href="index.html">All Menus</a></li>
+      <li><a href="add.html">Breakfast</a></li>        
+      <li><a href="search.html">Lunch</a></li>
+      <li><a href="pond.html">Dinner</a></li>
+      <li class="right"><a class="active" href="login.html">Login</a></a></li>
     </ul>
 
+    <div id="menu" class="container">
+        <h1>Diner-PancakHouse Menu</h1>
+    </div>
+
     <script>
-        // Function to fetch menu from backend and display it
-        function fetchAndDisplayMenu() {
-            fetch('http://localhost:8080/merger') // Change URL to match your backend URL
-                .then(response => response.json())
-                .then(menuItems => {
-                    const menuList = document.getElementById('menu-list');
-                    menuList.innerHTML = ''; // Clear existing menu items
+      let host = "http://localhost:8080";
+      let menuDiv = document.getElementById("menu");
 
-                    menuItems.forEach(item => {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = `${item.name} - $${item.price}`;
-                        menuList.appendChild(listItem);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching menu:', error);
-                });
+      displayTheMenu();
+
+      async function getTheMenu() {
+        let response = await fetch(host + "/merger");
+        let menu = await response.json();
+        return menu;
+      }
+
+      async function displayTheMenu() {
+        let menu = await getTheMenu();
+        for (let menuItem of menu) {
+          let div = document.createElement("div");
+          div.class = "menu-item";
+          div.innerHTML = `
+               <div class="menu-item">
+                <div class="item-name">${menuItem.name}</div>
+                <div class="item-description">${menuItem.description}</div>
+                <div class="item-price">${menuItem.price}</div>
+               </div>
+               `;
+          menuDiv.appendChild(div);
         }
-
-        // Call fetchAndDisplayMenu function when the page loads
-        document.addEventListener('DOMContentLoaded', fetchAndDisplayMenu);
+      }
     </script>
-</body>
+  </body>
 </html>
